@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-sys.path.append("/home/kiegan/Documents/stylegan2-ada")
+sys.path.append("/path/to/stylegan2")
 import pickle
 import dnnlib
 import dnnlib.tflib as tflib

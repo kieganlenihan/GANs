@@ -1,4 +1,4 @@
-#GANs
+#GANs  
 Generate video of interpolated GAN images. Vectors in the latent space of graphical bike images are translated to show newly generated bikes. The generator and discriminator of these new images were created using Stylegan2 and training on the biked dataset below.
 
 Stylegan2

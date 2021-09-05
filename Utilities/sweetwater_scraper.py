@@ -1,4 +1,3 @@
-from numpy.core.fromnumeric import prod
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,7 +17,7 @@ class music_scraper:
         self.chrome = webdriver.Chrome(executable_path = driver_path)
         self.url = url_base
         self.out_f = out_image_folder + "%s/" % instrument_type
-        out_log = os.path.join("self.out_f" + "log_%s.wbep" % instrument_type)
+        out_log = os.path.join("%slog_%s" % (self.out_f, instrument_type))
         self.log_f = open(out_log, "w")
         self.item_counter = 1
         self.variant_counter = 0
@@ -139,18 +138,26 @@ class music_scraper:
                 self.page_counter += 1
         except:
             self.log_progress("Finished parsing\nDisplaying output information:")
-            self.log_progress("    Pictures saved: %d", self.item_counter)
-            self.log_progress("    Variants found: %d", self.variant_counter)
-            self.log_progress("    Guitars found: %d", self.guitar_counter)
-            self.log_progress("    Pages passed: %d\n", self.page_counter)
-            self.log_progress("    Block walls passed: %d", self.block_passes)
-            self.log_progress("    Total time to complete scrape: %d", time.time() - self.start_t)
+            self.log_progress("    Pictures saved: %d" % self.item_counter)
+            self.log_progress("    Variants found: %d" % self.variant_counter)
+            self.log_progress("    Guitars found: %d" % self.guitar_counter)
+            self.log_progress("    Pages passed: %d\n" % self.page_counter)
+            self.log_progress("    Block walls passed: %d" % self.block_passes)
+            self.log_progress("    Total time to complete scrape: %f" % (time.time() - self.start_t))
             self.log_f.close()
+        self.chrome.close()
     
 if __name__ == "__main__":
     driver_exec = "/home/kiegan/Documents/GANs/Utilities/chromedriver"
-    scrape_url = "https://www.sweetwater.com/c592--Semi_hollowbody_Guitars"
     out_path = "/home/kiegan/Documents/Datasets/Images/Guitars/"
-    instrument_type = "Semi-Hollow"
+    
+    scrape_url = "https://www.sweetwater.com/c591--Hollowbody_Guitars"
+    instrument_type = "Hollow-body"
     ms = music_scraper(driver_exec, scrape_url, out_path, instrument_type)
     ms.scrape()
+
+    urls = ["https://www.sweetwater.com/c1109--Baritone_Guitars", "https://www.sweetwater.com/c1115--7_string_Guitars", "https://www.sweetwater.com/c1116--8_string_Guitars", "https://www.sweetwater.com/c595--Left_handed_Electric_Guitars"]
+    instrument_type = "Solid-body"
+    for scrape_url in urls:
+        ms = music_scraper(driver_exec, scrape_url, out_path, instrument_type)
+        ms.scrape()

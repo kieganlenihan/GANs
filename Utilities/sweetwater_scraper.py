@@ -112,7 +112,8 @@ class music_scraper:
         new_window = self.chrome.window_handles[1]
         self.chrome.switch_to.window(new_window)
         self.pass_block_wall()
-        self.find_product_variants()
+        # self.find_product_variants()
+        # The above line is deprecated because sweetwater lists all variants in the home page
         img_link = self.get_media_link()
         prod_name = self.get_product_name()
         self.save_image(img_link, prod_name)

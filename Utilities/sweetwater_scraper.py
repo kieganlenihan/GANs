@@ -8,7 +8,8 @@ import requests
 import os
 import time
 
-explicit_wait_time = 5
+media_explicit_wait_time = 5
+wall_explicit_wait_time = 2
 button_hold_time = 8
 
 class music_scraper:
@@ -16,7 +17,7 @@ class music_scraper:
         self.start_t = time.time()
         self.chrome = webdriver.Chrome(executable_path = driver_path)
         self.url = url_base
-        self.out_f = out_image_folder
+        self.out_f = out_image_folder + "%s/" % instrument_type
         out_log = os.path.join("self.out_f" + "log_%s.wbep" % instrument_type)
         self.log_f = open(out_log, "w")
         self.item_counter = 1
@@ -29,7 +30,7 @@ class music_scraper:
         self.log_f.write("%s\n" % message)
     def pass_block_wall(self):
         try:
-            WebDriverWait(self.chrome, explicit_wait_time).until(EC.presence_of_element_located((By.ID, "px-captcha")))
+            WebDriverWait(self.chrome, wall_explicit_wait_time).until(EC.presence_of_element_located((By.ID, "px-captcha")))
             block_button = self.chrome.find_element_by_id("px-captcha")
             self.log_progress("\n\n\nBlock button found, attemping to press it")
         except:
@@ -63,7 +64,7 @@ class music_scraper:
             self.chrome.refresh()
             self.pass_block_wall()
     def wait_for_store_item(self):
-        WebDriverWait(self.chrome, explicit_wait_time).until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/store/detail/']")))
+        WebDriverWait(self.chrome, media_explicit_wait_time).until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/store/detail/']")))
     def find_store_item(self, element):
         self.wait_for_store_item()
         return element.find_element_by_css_selector("a[href*='/store/detail/']").get_attribute("href")
@@ -78,7 +79,7 @@ class music_scraper:
         with open(out_file, "wb") as f:
             f.write(page.content)
     def get_media_link(self):
-        WebDriverWait(self.chrome, explicit_wait_time).until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='media']")))
+        WebDriverWait(self.chrome, media_explicit_wait_time).until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='media']")))
         return self.chrome.find_element_by_css_selector("a[href*='media']").get_attribute("href")
     def get_product_name(self):
         raw_text = self.chrome.find_element_by_class_name("product__name").text
@@ -128,9 +129,9 @@ class music_scraper:
         self.pass_block_wall()
         try:
             while True:
-                WebDriverWait(self.chrome, explicit_wait_time).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "product-card__name")))
+                WebDriverWait(self.chrome, media_explicit_wait_time).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "product-card__name")))
                 self.parse_products_on_page()
-                WebDriverWait(self.chrome, explicit_wait_time).until(EC.presence_of_element_located((By.CLASS_NAME, "next")))
+                WebDriverWait(self.chrome, media_explicit_wait_time).until(EC.presence_of_element_located((By.CLASS_NAME, "next")))
                 next_button = self.chrome.find_element_by_class_name("next")
                 next_button.click()
                 self.pass_block_wall()
@@ -152,4 +153,3 @@ if __name__ == "__main__":
     instrument_type = "Semi-Hollow"
     ms = music_scraper(driver_exec, scrape_url, out_path, instrument_type)
     ms.scrape()
-    
